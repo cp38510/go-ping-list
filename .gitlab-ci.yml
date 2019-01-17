@@ -1,0 +1,26 @@
+stages:
+  - build
+
+build:
+  stage: build
+  tags:
+   - docker
+  image: golang:latest
+  before_script:
+    - cd $GOPATH/src
+    - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
+    - cd gitlab.com/$CI_PROJECT_NAMESPACE
+    - ln -s $CI_PROJECT_DIR
+    - cd $CI_PROJECT_NAME
+
+  script:
+   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+   - /go/bin/dep ensure
+   - go build -o go-ping-list
+    # Execute the binary
+#    - ./go-ping-list
+
+  artifacts:
+    paths:
+    - go-ping-list
+    expire_in: 1 day
